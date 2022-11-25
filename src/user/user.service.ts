@@ -27,9 +27,21 @@ export class userService {
   async getAllUsers():Promise<IUserEntity[]> {
     return this.users;
 } 
-  async deleteByid(userId): Promise<boolean> {
-    const IsUserReal = this.users.find((user) => user.id === userId);
-    if(!IsUserReal) return false;
+
+  async getUserById(userId: string): Promise<IUserEntity> {
+    const IsRealUser = this.users.find((user) => user.id === userId);
+    if(!IsRealUser) {
+      throw new Error("USER NOT FOUND");
+    }
+    return IsRealUser;
+    
+  }
+  async deleteByid(userId: string): Promise<boolean> {
+    const IsRealUser = this.users.find((user) => user.id === userId);
+    if(!IsRealUser){
+      
+      return false;
+    } 
 
     this.users.map((user, index) => {
       if (user.id === userId) {
