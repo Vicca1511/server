@@ -12,6 +12,8 @@ import { IUserEntity } from '../entities/user.entity';
 import { userService } from '../user.service';
 import { UserDto } from './dto/userImput.dto';
 import { PartialUserDto } from './partialUserInput.do';
+import { IHttpResponse } from '../../utils/IHttpResponse';
+import { handleException } from 'src/utils/exceptions/exceptionsHelper';
 
 @Controller()
 export class userController {
@@ -26,7 +28,7 @@ export class userController {
     try {
       return this.service.getUserById(Userid);
     } catch (err) {
-      console.log(err);
+      handleException(err);
     }
   }
 
@@ -43,7 +45,7 @@ export class userController {
         role,
       });
     } catch (err) {
-      console.log(err);
+      handleException(err);
     }
   }
   @Patch()
@@ -51,21 +53,17 @@ export class userController {
     try {
       return await this.service.updateUser(userData);
     } catch (err) {
-      console.log(err);
+      handleException(err);
     }
   }
 
   @Delete(':id')
   async deleteUser(@Param('id') userId: string): Promise<string> {
-    try {
-      const userIsDeleted = await this.service.deleteByid(userId);
-      if (!userIsDeleted) {
-        return 'User deleted successfully';
-      }else {
-        return 'User not found';
-      }
-    } catch (err) {
-      console.log(err);
+    const userIsDeleted = await this.service.deleteByid(userId);
+    if (!userIsDeleted) {
+      return 'User deleted successfully';
+    } else {
+      return 'User not found';
     }
   }
 }
